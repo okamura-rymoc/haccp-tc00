@@ -171,7 +171,6 @@ def render_ng_notice():
     holder = st.container()
     holder.error("不適の項目があります。責任者へ必ず報告してください。")
     if holder.button("OK", key="ng_ok"):
-        # pending があれば保存して初期化
         pending = st.session_state.pop("pending_record", None)
         if pending:
             items_json = json.dumps({k: v for k, v in pending["selections"].items()}, ensure_ascii=False)
@@ -182,25 +181,10 @@ def render_ng_notice():
             )
             save_record(record, items_json)
             st.success("保存しました。")
-        # メッセージ消去＆入力初期化
         st.session_state.pop("ng_notice", None)
         st.session_state["form_nonce"] = st.session_state.get("form_nonce", 0) + 1
         st.rerun()
 
-def render_ng_notice():
-    notice = st.session_state.get("ng_notice")
-    if not notice:
-        return
-    holder = st.container()
-    items = notice.get("items", [])
-    if items:
-        holder.error("不適の項目があります。責任者へ必ず報告してください：" + "、".join(items))
-    else:
-        holder.error("不適の項目があります。責任者へ必ず報告してください。")
-    if holder.button("OK", key="ng_ok"):
-        st.session_state.pop("ng_notice", None)
-        st.session_state["form_nonce"] = st.session_state.get("form_nonce", 0) + 1
-        st.rerun()  # Streamlit 1.27以降では st.experimental_rerun の代わりにこちらを使用
 
 
 def save_record(record: NewRecord, items_json: str):

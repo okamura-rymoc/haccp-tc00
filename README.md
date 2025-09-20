@@ -1,7 +1,7 @@
-# HACCP 衛生管理（Streamlit）— Render デプロイ手順
+# HACCP 衛生管理（Streamlit）— GitHub/Render デプロイ手順
 
-## 同梱物
-- `haccp_1_app.py` … アプリ本体（DB/ログは `DATA_DIR` → 既定 `/app/data`）
+## 収録ファイル
+- `haccp_1_app.py` … アプリ本体（DB/ログは `DATA_DIR` に保存。既定 `/app/data`）
 - `requirements.txt`
 - `Dockerfile`
 
@@ -10,19 +10,17 @@
 - `FACTORY_NAME` … PDFに表示する工場名（既定: △△△△工場）
 - `DATA_DIR` … 変更不要（既定 `/app/data`）
 
-## Render での手順（概要）
-1. 本ディレクトリ一式を GitHub リポジトリに push
+## GitHub へのアップロード
+1. このフォルダ内の4ファイルをそのまま GitHub の **リポジトリ直下** にアップロード
 2. Render ダッシュボード → **New > Web Service**
-3. リポジトリを選択 → Docker を自動認識
-4. （任意）**Environment** に `COMPANY_NAME` `FACTORY_NAME` `CLIENT_ID` を追加
+3. リポジトリを選択すると **Docker** として認識
+4. （任意）Environment Variables に `COMPANY_NAME` `FACTORY_NAME` を追加
 5. （推奨）**Disks** で Persistent Disk を `/app/data` にマウント
-6. Deploy → `https://xxxxx.onrender.com` で動作確認
-7. **Settings > Custom Domains** で `haccp-xxx.rymoc.co.jp` を追加
-   ムームードメイン側で CNAME を「DNS Target」に向ける
+6. デプロイ後、**Settings > Custom Domains** で `haccp-xxx.rymoc.co.jp` を追加（ムームードメインでCNAME）
 
-## ローカル確認
+## ローカル確認（任意）
 ```bash
 docker build -t haccp-app .
-docker run --rm -p 8501:8501 -v $(pwd)/data:/app/data -e COMPANY_NAME="株式会社テスト" -e FACTORY_NAME="第一工場" haccp-app
+docker run --rm -p 8501:8501 -v $(pwd)/data:/app/data   -e COMPANY_NAME="株式会社テスト" -e FACTORY_NAME="第一工場" haccp-app
 # → http://localhost:8501
 ```
